@@ -1,10 +1,9 @@
-package fotius.example.donations.infra.jdbc;
+package fotius.example.donations.payment.infra.jdbc;
 
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
-import fotius.example.donations.payment.infra.jdbc.JdbcPaymentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
