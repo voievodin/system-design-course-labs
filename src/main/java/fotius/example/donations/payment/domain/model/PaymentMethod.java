@@ -1,7 +1,2 @@
-package fotius.example.donations.payment.domain.model;
-
-public enum PaymentMethod {
-    CARD,
-    APPLE_PAY,
-    GOOGLE_PAY
+package fotius.example.donations.payment.domain.model;public class PaymentMethod {
 }
