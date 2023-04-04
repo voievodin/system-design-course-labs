@@ -28,25 +28,31 @@ public class PaymentMethodController {
 
     @GetMapping(path = "/{userId}/unblock/{method}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void unblockPaymentMethod(@PathVariable("userId") Long userId, @PathVariable("method") PaymentMethodTypes method) {
-        paymentMethodService.unblockPaymentMethod(method, userId);
+    public PaymentMethodTypes unblockPaymentMethod(@PathVariable("userId") Long userId, @PathVariable("method") PaymentMethodTypes method) {
+        return paymentMethodService.unblockPaymentMethod(method, userId);
     }
 
     @GetMapping(path = "/{userId}/block/{method}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void blockPaymentMethod(@PathVariable("userId") Long userId, @PathVariable("method") PaymentMethodTypes method) {
-        paymentMethodService.blockPaymentMethod(method, userId);
+    public PaymentMethodTypes blockPaymentMethod(@PathVariable("userId") Long userId, @PathVariable("method") PaymentMethodTypes method) {
+        return paymentMethodService.blockPaymentMethod(method, userId);
     }
 
     @GetMapping(path = "/{userId}/blockAll", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void blockAllPaymentMethods(@PathVariable("userId") Long userId) {
-        paymentMethodService.blockAllPaymentMethods(userId);
+    public List<PaymentMethodTypes> blockAllPaymentMethods(@PathVariable("userId") Long userId) {
+        return paymentMethodService.blockAllPaymentMethods(userId);
     }
 
-    @GetMapping(path = "/{userId}/createOrUpdate", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{userId}/unblockAll", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public void createOrUpdatePaymentMethodsForUser(@PathVariable("userId") Long userId) {
-        paymentMethodService.createOrUpdatePaymentMethodsForUser(userId);
+    public List<PaymentMethodTypes> unblockAllPaymentMethods(@PathVariable("userId") Long userId) {
+        return paymentMethodService.unblockAllPaymentMethods(userId);
+    }
+
+    @GetMapping(path = "/{userId}/init", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<PaymentMethodTypes> createOrUpdatePaymentMethodsForUser(@PathVariable("userId") Long userId) {
+        return paymentMethodService.createOrUpdatePaymentMethodsForUser(userId);
     }
 }

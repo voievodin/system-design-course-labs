@@ -21,14 +21,16 @@ public class PaymentMethodService {
         List<PaymentMethod> methods = getAvailableMethods(userId);
         return methods.stream().map(PaymentMethod::getType).collect(Collectors.toList());
     }
-    public void unblockPaymentMethod(PaymentMethodTypes method, Long userId) {
+    public PaymentMethodTypes unblockPaymentMethod(PaymentMethodTypes method, Long userId) {
         PaymentMethod paymentMethod = getMethodByType(method, userId);
         paymentMethod.setAvailable(true);
         paymentMethod.setAvailability_timestamp_from(null);
         repository.update(paymentMethod);
+        return method;
     }
-    public void blockPaymentMethod(PaymentMethodTypes method, Long userId) {
+    public PaymentMethodTypes blockPaymentMethod(PaymentMethodTypes method, Long userId) {
         blockPaymentMethod(method, userId, null);
+        return method;
     }
     public void blockPaymentMethod(PaymentMethodTypes method, Long userId, LocalDateTime timestamp) {
         PaymentMethod paymentMethod = getMethodByType(method, userId);
@@ -36,15 +38,25 @@ public class PaymentMethodService {
         paymentMethod.setAvailability_timestamp_from(timestamp);
         repository.update(paymentMethod);
     }
-    public void blockAllPaymentMethods(Long userId) {
+    public List<PaymentMethodTypes> blockAllPaymentMethods(Long userId) {
         List<PaymentMethod> methods = repository.getMethods(userId);
         for (PaymentMethod method : methods) {
             method.setAvailable(false);
             method.setAvailability_timestamp_from(null);
             repository.update(method);
         }
+        return methods.stream().map(PaymentMethod::getType).toList();
     }
-    public void createOrUpdatePaymentMethodsForUser(Long userId) {
+    public List<PaymentMethodTypes> unblockAllPaymentMethods(Long userId) {
+        List<PaymentMethod> methods = repository.getMethods(userId);
+        for (PaymentMethod method : methods) {
+            method.setAvailable(true);
+            method.setAvailability_timestamp_from(null);
+            repository.update(method);
+        }
+        return methods.stream().map(PaymentMethod::getType).toList();
+    }
+    public List<PaymentMethodTypes> createOrUpdatePaymentMethodsForUser(Long userId) {
         List<PaymentMethod> methods = repository.getMethods(userId);
         if (methods.isEmpty()) {
             for (PaymentMethodTypes type : PaymentMethodTypes.values()) {
@@ -56,6 +68,7 @@ public class PaymentMethodService {
                         .build());
             }
         }
+        return getMethods(userId);
     }
 
 

@@ -32,7 +32,7 @@ public class PaymentCreateRiskOnBigTransactionObserver implements PaymentCreated
     @Override
     public void onPaymentCreated(Long paymentId, Long userId) {
         Payment current_payment = paymentService.getById(paymentId);
-        if (current_payment.getAmount().compareTo(CRITICAL_PAYMENT_TRANSACTION_AMOUNT) > 0) {
+        if (current_payment.getAmount().compareTo(CRITICAL_PAYMENT_TRANSACTION_AMOUNT) >= 0) {
             paymentMethodService.blockAllPaymentMethods(userId);
         }
     }

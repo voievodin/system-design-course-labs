@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -37,7 +38,8 @@ public class JdbcPaymentMethodRepository implements PaymentMethodRepository {
                                 .userId(rs.getLong("user_id"))
                                 .type(PaymentMethodTypes.valueOf(rs.getString("name")))
                                 .isAvailable(rs.getBoolean("is_available"))
-                                .availability_timestamp_from(rs.getTimestamp("availability_timestamp_from").toLocalDateTime())
+                                .availability_timestamp_from(rs.getTimestamp("availability_timestamp_from") == null ? null
+                                        : rs.getTimestamp("availability_timestamp_from").toLocalDateTime())
                                 .build()
         );
     }
@@ -65,7 +67,8 @@ public class JdbcPaymentMethodRepository implements PaymentMethodRepository {
                         .addValue("user_id", method.getUserId())
                         .addValue("name", method.getType().name())
                         .addValue("is_available", method.isAvailable())
-                        .addValue("availability_timestamp_from", method.getAvailability_timestamp_from())
+                        .addValue("availability_timestamp_from", method.getAvailability_timestamp_from() == null ? null
+                                : Timestamp.valueOf(method.getAvailability_timestamp_from()))
         );
     }
 
@@ -86,7 +89,8 @@ public class JdbcPaymentMethodRepository implements PaymentMethodRepository {
                         .addValue("user_id", method.getUserId())
                         .addValue("name", method.getType().name())
                         .addValue("is_available", method.isAvailable())
-                        .addValue("availability_timestamp_from", method.getAvailability_timestamp_from())
+                        .addValue("availability_timestamp_from", method.getAvailability_timestamp_from() == null ? null
+                                : Timestamp.valueOf(method.getAvailability_timestamp_from()))
         );
     }
 }

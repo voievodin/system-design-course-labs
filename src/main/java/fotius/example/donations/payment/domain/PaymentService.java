@@ -58,6 +58,6 @@ public class PaymentService {
     }
 
     public List<Payment> getPreviousPayments(Long userId, LocalDateTime from, LocalDateTime to) {
-        return null;
+        return repository.findByUserIdAndBetweenDates(userId, from, to);
     }
 }
