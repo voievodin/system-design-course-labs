@@ -2,8 +2,9 @@ package fotius.example.donations.payment.domain;
 
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
-import fotius.example.donations.payment.domain.model.PaymentMethod;
+import fotius.example.donations.payment.domain.model.PaymentMethodTypes;
 import fotius.example.donations.payment.domain.model.PaymentState;
+import fotius.example.donations.payment.domain.observers.PaymentCreatedObserversManager;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -11,18 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final PaymentCreatedObserversManager paymentCreatedObserversManager;
 
     @Transactional
     public Payment create(
         BigDecimal amount,
         Currency currency,
-        PaymentMethod method,
+        PaymentMethodTypes method,
         Long userId
     ) {
         final Payment payment = Payment.builder()
@@ -34,6 +38,7 @@ public class PaymentService {
             .createdAt(LocalDateTime.now())
             .build();
         repository.insert(payment);
+        paymentCreatedObserversManager.notify(payment.getId(), userId);
         return payment;
     }
 
@@ -50,5 +55,9 @@ public class PaymentService {
 
     public Payment getById(Long paymentId) {
         return repository.findById(paymentId).orElseThrow(() -> new PaymentNotFoundException(paymentId));
+    }
+
+    public List<Payment> getPreviousPayments(Long userId, LocalDateTime from, LocalDateTime to) {
+        return null;
     }
 }

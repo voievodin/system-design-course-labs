@@ -7,33 +7,32 @@ import fotius.example.donations.payment.domain.model.PaymentState;
 import fotius.example.donations.payment.domain.observers.PaymentCreatedObserver;
 import fotius.example.donations.payment.domain.observers.PaymentCreatedObserversManager;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
-public class PaymentCreateRiskOnRecurringTransactionsObserver implements PaymentCreatedObserver {
+public class PaymentCreateRiskOnBigTransactionObserver implements PaymentCreatedObserver {
 
-    private static final int PAYMENT_COUNT_PER_METHOD_PER_DAY = 5;
+    private static final BigDecimal CRITICAL_PAYMENT_TRANSACTION_AMOUNT = new BigDecimal(1000);
 
     private PaymentCreatedObserversManager paymentCreatedObserversManager;
     private PaymentService paymentService;
     private PaymentMethodService paymentMethodService;
 
-    public PaymentCreateRiskOnRecurringTransactionsObserver(){
+
+    public PaymentCreateRiskOnBigTransactionObserver() {
         paymentCreatedObserversManager.addPaymentCreatedObserver(this);
     }
 
     @Override
     public void onPaymentCreated(Long paymentId, Long userId) {
         Payment current_payment = paymentService.getById(paymentId);
-        Payment[] payments = (Payment[]) paymentService.getPreviousPayments(userId, LocalDateTime.now().minusHours(24), LocalDateTime.now()).stream()
-            .filter(payment -> payment.getMethod().equals(current_payment.getMethod()))
-            .filter(payment -> payment.getState().equals(PaymentState.COMPLETED))
-            .toArray();
-        if (payments.length > PAYMENT_COUNT_PER_METHOD_PER_DAY) {
-            paymentMethodService.blockPaymentMethod(current_payment.getMethod(), userId);
+        if (current_payment.getAmount().compareTo(CRITICAL_PAYMENT_TRANSACTION_AMOUNT) > 0) {
+            paymentMethodService.blockAllPaymentMethods(userId);
         }
     }
 }

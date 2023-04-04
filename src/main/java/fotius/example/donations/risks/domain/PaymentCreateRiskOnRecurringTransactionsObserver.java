@@ -13,27 +13,29 @@ import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
-public class PaymentCreateRiskObserver implements PaymentCreatedObserver {
+public class PaymentCreateRiskOnRecurringTransactionsObserver implements PaymentCreatedObserver {
 
-    private static final int PAYMENT_COUNT_PER_METHOD_PER_DAY = 5;
+    private static final int PAYMENT_CRITICAL_COUNT_PER_METHOD = 5;
+    private static final int RISK_CHECKING_CRITICAL_COUNT_DAYS = 1;
+    private static final int RISK_BLOCKING_DAYS = 1;
 
     private PaymentCreatedObserversManager paymentCreatedObserversManager;
     private PaymentService paymentService;
     private PaymentMethodService paymentMethodService;
 
-    public PaymentCreateRiskObserver(){
+    public PaymentCreateRiskOnRecurringTransactionsObserver() {
         paymentCreatedObserversManager.addPaymentCreatedObserver(this);
     }
 
     @Override
     public void onPaymentCreated(Long paymentId, Long userId) {
         Payment current_payment = paymentService.getById(paymentId);
-        Payment[] payments = (Payment[]) paymentService.getPreviousPayments(userId, LocalDateTime.now().minusHours(24), LocalDateTime.now()).stream()
+        Payment[] payments = (Payment[]) paymentService.getPreviousPayments(userId, LocalDateTime.now().minusDays(RISK_CHECKING_CRITICAL_COUNT_DAYS), LocalDateTime.now()).stream()
             .filter(payment -> payment.getMethod().equals(current_payment.getMethod()))
             .filter(payment -> payment.getState().equals(PaymentState.COMPLETED))
             .toArray();
-        if (payments.length > PAYMENT_COUNT_PER_METHOD_PER_DAY) {
-            paymentMethodService.blockPaymentMethod(current_payment.getMethod(), userId);
+        if (payments.length > PAYMENT_CRITICAL_COUNT_PER_METHOD) {
+            paymentMethodService.blockPaymentMethod(current_payment.getMethod(), userId, LocalDateTime.now().plusDays(RISK_BLOCKING_DAYS));
         }
     }
 }

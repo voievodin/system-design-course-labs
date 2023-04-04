@@ -3,7 +3,7 @@ package fotius.example.donations.payment.infra.jdbc;
 import fotius.example.donations.payment.domain.PaymentRepository;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
-import fotius.example.donations.payment.domain.model.PaymentMethod;
+import fotius.example.donations.payment.domain.model.PaymentMethodTypes;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +42,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
                 Payment.builder()
                     .id(rs.getLong("id"))
                     .amount(rs.getBigDecimal("amount"))
-                    .method(PaymentMethod.valueOf(rs.getString("method")))
+                    .method(PaymentMethodTypes.valueOf(rs.getString("method")))
                     .currency(Currency.valueOf(rs.getString("currency")))
                     .userId(rs.getLong("user_id"))
                     .state(PaymentState.valueOf(rs.getString("state")))
