@@ -12,18 +12,20 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-@AllArgsConstructor
 public class PaymentCreateRiskOnRecurringTransactionsObserver implements PaymentCreatedObserver {
 
     private static final int PAYMENT_CRITICAL_COUNT_PER_METHOD = 5;
     private static final int RISK_CHECKING_CRITICAL_COUNT_DAYS = 1;
     private static final int RISK_BLOCKING_DAYS = 1;
 
-    private PaymentCreatedObserversManager paymentCreatedObserversManager;
-    private PaymentService paymentService;
-    private PaymentMethodService paymentMethodService;
+    private final PaymentService paymentService;
+    private final PaymentMethodService paymentMethodService;
 
-    public PaymentCreateRiskOnRecurringTransactionsObserver() {
+    public PaymentCreateRiskOnRecurringTransactionsObserver(PaymentCreatedObserversManager paymentCreatedObserversManager,
+                                                            PaymentService paymentService,
+                                                            PaymentMethodService paymentMethodService) {
+        this.paymentService = paymentService;
+        this.paymentMethodService = paymentMethodService;
         paymentCreatedObserversManager.addPaymentCreatedObserver(this);
     }
 

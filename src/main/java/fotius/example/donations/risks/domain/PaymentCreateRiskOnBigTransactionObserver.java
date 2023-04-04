@@ -14,17 +14,18 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
-@AllArgsConstructor
 public class PaymentCreateRiskOnBigTransactionObserver implements PaymentCreatedObserver {
 
     private static final BigDecimal CRITICAL_PAYMENT_TRANSACTION_AMOUNT = new BigDecimal(1000);
-
-    private PaymentCreatedObserversManager paymentCreatedObserversManager;
-    private PaymentService paymentService;
-    private PaymentMethodService paymentMethodService;
+    private final PaymentService paymentService;
+    private final PaymentMethodService paymentMethodService;
 
 
-    public PaymentCreateRiskOnBigTransactionObserver() {
+    public PaymentCreateRiskOnBigTransactionObserver(PaymentCreatedObserversManager paymentCreatedObserversManager,
+                                                     PaymentService paymentService,
+                                                     PaymentMethodService paymentMethodService) {
+        this.paymentService = paymentService;
+        this.paymentMethodService = paymentMethodService;
         paymentCreatedObserversManager.addPaymentCreatedObserver(this);
     }
 
