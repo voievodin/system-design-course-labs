@@ -2,7 +2,7 @@ package fotius.example.donations.payment.infra.jdbc;
 
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
-import fotius.example.donations.payment.domain.model.PaymentMethod;
+import fotius.example.donations.payment.domain.model.PaymentMethodTypes;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class JdbcPaymentRepositoryTest {
         final Payment inserted = Payment.builder()
             .amount(new BigDecimal(100))
             .currency(Currency.EUR)
-            .method(PaymentMethod.CARD)
+            .method(PaymentMethodTypes.CARD)
             .userId(123L)
             .state(PaymentState.NEW)
             .createdAt(LocalDateTime.now().withNano(0))

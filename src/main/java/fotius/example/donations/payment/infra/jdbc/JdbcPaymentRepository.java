@@ -1,9 +1,9 @@
 package fotius.example.donations.payment.infra.jdbc;
 
-import fotius.example.donations.payment.domain.PaymentRepository;
+import fotius.example.donations.payment.domain.repositories.PaymentRepository;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
-import fotius.example.donations.payment.domain.model.PaymentMethod;
+import fotius.example.donations.payment.domain.model.PaymentMethodTypes;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class JdbcPaymentRepository implements PaymentRepository {
                 Payment.builder()
                     .id(rs.getLong("id"))
                     .amount(rs.getBigDecimal("amount"))
-                    .method(PaymentMethod.valueOf(rs.getString("method")))
+                    .method(PaymentMethodTypes.valueOf(rs.getString("method")))
                     .currency(Currency.valueOf(rs.getString("currency")))
                     .userId(rs.getLong("user_id"))
                     .state(PaymentState.valueOf(rs.getString("state")))
@@ -54,6 +55,39 @@ public class JdbcPaymentRepository implements PaymentRepository {
         } else {
             return Optional.of(payments.get(0));
         }
+    }
+
+    @Override
+    public List<Payment> findByUserIdAndBetweenDates(Long userId, LocalDateTime from, LocalDateTime to) {
+        return jdbcTemplate.query(
+            """
+            SELECT
+                id,
+                amount,
+                method,
+                currency,
+                user_id,
+                state,
+                created_at
+            FROM payment
+            WHERE user_id = :user_id
+            AND created_at BETWEEN :from AND :to
+            """,
+            new MapSqlParameterSource()
+                .addValue("user_id", userId)
+                .addValue("from", Timestamp.valueOf(from))
+                .addValue("to", Timestamp.valueOf(to)),
+            (rs, rowNum) ->
+                Payment.builder()
+                    .id(rs.getLong("id"))
+                    .amount(rs.getBigDecimal("amount"))
+                    .method(PaymentMethodTypes.valueOf(rs.getString("method")))
+                    .currency(Currency.valueOf(rs.getString("currency")))
+                    .userId(rs.getLong("user_id"))
+                    .state(PaymentState.valueOf(rs.getString("state")))
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build()
+        );
     }
 
     @Override
