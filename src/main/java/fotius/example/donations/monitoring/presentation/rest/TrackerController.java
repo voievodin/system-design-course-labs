@@ -5,7 +5,6 @@ import fotius.example.donations.monitoring.domain.model.AmountLimitType;
 import fotius.example.donations.monitoring.domain.model.PaymentsSuccessRate;
 import fotius.example.donations.monitoring.domain.model.Tracker;
 import fotius.example.donations.payment.domain.model.Currency;
-import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,7 +28,6 @@ public class TrackerController {
         @RequestParam("amount_limit_type") AmountLimitType amountLimitType,
         @RequestParam("tracker_id") int trackerId
     ) {
-        System.out.println("sdjfsdlfi");
         return trackerService.create(trackerId,
                 amountLimitType,
                 amountLimit,
@@ -38,13 +36,10 @@ public class TrackerController {
     }
 
     @GetMapping(
-            path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public Tracker getById(@PathVariable("id") int id) {
-        return trackerService.getById(id);
-    }
+    public Tracker[] getAll() { return trackerService.getAll(); }
 
     @GetMapping(
             path = "/rate/{id}",

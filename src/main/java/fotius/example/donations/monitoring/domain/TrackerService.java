@@ -1,10 +1,10 @@
 package fotius.example.donations.monitoring.domain;
 
-import fotius.example.donations.monitoring.domain.exceptions.NoPaymentsWithTrackerParams;
 import fotius.example.donations.monitoring.domain.exceptions.TrackerNotFoundException;
 import fotius.example.donations.monitoring.domain.model.AmountLimitType;
 import fotius.example.donations.monitoring.domain.model.PaymentsSuccessRate;
 import fotius.example.donations.monitoring.domain.model.Tracker;
+import fotius.example.donations.payment.domain.PaymentRepository;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
 public class TrackerService {
-    private final TrackerRepository repository;
+    private final TrackerRepository trackerRepository;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     public Tracker create(
@@ -36,20 +36,27 @@ public class TrackerService {
                 .amountLimit(amountLimit)
                 .amountLimitType(amountLimitType)
                 .build();
-        repository.insert(tracker);
+        trackerRepository.insert(tracker);
         return tracker;
     }
 
-    public Tracker getById(int trackerId) {
-        return repository.findById(trackerId).orElseThrow(() -> new TrackerNotFoundException(trackerId));
+    public Tracker[] getAll() {
+        return trackerRepository.findAll().orElse(new Tracker[0]);
     }
 
     public PaymentsSuccessRate getSuccessRateById(int trackerId) {
-        Tracker tracker = repository.findById(trackerId).orElseThrow(() -> new TrackerNotFoundException(trackerId));
-        Payment[] payments = repository.findPaymentsByTrackerParams(tracker.getMethod(),
-                tracker.getCurrency(),
-                tracker.getAmountLimit(),
-                tracker.getAmountLimitType()).orElseThrow(() -> new NoPaymentsWithTrackerParams(trackerId));
+        Tracker tracker = trackerRepository.findById(trackerId).orElse(null);
+        if (tracker == null) return PaymentsSuccessRate.builder().successfulPayments(0).failPayments(0).build();
+
+        Payment[] payments = (tracker.getAmountLimitType() == AmountLimitType.HIGHER) ?
+                paymentRepository.findByMethodByCurrencyWithHigherAmount(tracker.getMethod(),
+                    tracker.getCurrency(),
+                    tracker.getAmountLimit()).orElse(null)
+                :
+                paymentRepository.findByMethodByCurrencyWithLowerAmount(tracker.getMethod(),
+                        tracker.getCurrency(),
+                        tracker.getAmountLimit()).orElse(null);
+        if (payments == null) return PaymentsSuccessRate.builder().successfulPayments(0).failPayments(0).build();
 
         int successPayments = 0, failedPayments = 0;
         for (int i = 0; i < payments.length; i++) {

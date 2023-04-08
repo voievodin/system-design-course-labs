@@ -14,8 +14,4 @@ public interface TrackerRepository {
     Optional<Tracker> findById(long id);
     Optional<Tracker[]> findAll();
     void insert(Tracker tracker);
-    Optional<Payment[]> findPaymentsByTrackerParams(PaymentMethod method,
-                                                    Currency currency,
-                                                    BigDecimal amountLimit,
-                                                    AmountLimitType amountLimitType);
 }
