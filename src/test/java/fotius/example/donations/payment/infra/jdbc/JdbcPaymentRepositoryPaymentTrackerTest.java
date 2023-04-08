@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-public class JdbcPaymentRepositoryTest {
+public class JdbcPaymentRepositoryPaymentTrackerTest {
 
     @Autowired
     private JdbcPaymentRepository repository;
