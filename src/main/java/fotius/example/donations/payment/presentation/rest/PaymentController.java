@@ -1,9 +1,9 @@
 package fotius.example.donations.payment.presentation.rest;
 
-import fotius.example.donations.payment.domain.PaymentService;
+import fotius.example.donations.payment.domain.services.PaymentService;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
-import fotius.example.donations.payment.domain.model.PaymentMethod;
+import fotius.example.donations.payment.domain.model.PaymentMethodTypes;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +28,7 @@ public class PaymentController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Payment create(
-        @RequestParam("method") PaymentMethod method,
+        @RequestParam("method") PaymentMethodTypes method,
         @RequestParam("currency") Currency currency,
         @RequestParam("amount") BigDecimal amount,
         @RequestParam("user_id") Long userId
