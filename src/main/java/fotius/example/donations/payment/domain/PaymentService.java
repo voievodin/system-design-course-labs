@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final List<PaymentChangeListener> listeners;
 
     @Transactional
     public Payment create(
@@ -34,6 +36,7 @@ public class PaymentService {
             .createdAt(LocalDateTime.now())
             .build();
         repository.insert(payment);
+        listeners.forEach(x -> x.onChanged(payment));
         return payment;
     }
 
@@ -45,6 +48,7 @@ public class PaymentService {
         }
         payment.setState(toState);
         repository.update(payment);
+        listeners.forEach(x -> x.onChanged(payment));
         return payment;
     }
 
