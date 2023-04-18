@@ -1,8 +1,28 @@
-Main repository for system design course labs.
+Lab2 (music app)
+---
 
-:information_source: The `master` branch does not contain lab contents, each lab has a dedicated branch that you 
-will need to start from. The lab document will point to that branch.
+### Software
 
-Installing software:
+Required:
+- Jdk17.
+
+Useful resources:
 - Jdk17 installation [guide](docs/install-jdk17.md).
 - Intellij IDEA project setup [guide](docs/setup-intellij-project.md).
+- [sqlite client](https://sqlite.org/download.html).
+- `curl` must be available in your _Git Bash_ terminal.
+- [Postman](https://www.postman.com/downloads/) as `curl` alternative.
+
+### Application
+
+Start:
+
+```sh
+./gradlew bootRun
+```
+
+or run _Application.main_ from IDE.
+
+Stop:
+
+Press <kbd>ctrl+c</kbd> or stop _Application.main_ from IDE.
