@@ -1,5 +1,6 @@
 package fotius.example.donations.payment.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,9 @@ public class Payment {
     private Long userId;
     private PaymentState state;
     private LocalDateTime createdAt;
+
+    @JsonIgnore
+    public boolean isCompleted() {
+        return state == PaymentState.COMPLETED;
+    }
 }

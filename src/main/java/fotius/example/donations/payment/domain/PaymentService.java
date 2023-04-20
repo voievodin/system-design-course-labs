@@ -1,9 +1,14 @@
 package fotius.example.donations.payment.domain;
 
+import fotius.example.donations.payment.domain.model.BalanceChangedEvent;
+import fotius.example.donations.payment.domain.client.AccountServiceClient;
+import fotius.example.donations.payment.domain.exception.PaymentNotFoundException;
+import fotius.example.donations.payment.domain.exception.PaymentSystemException;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
+import fotius.example.donations.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -17,6 +22,7 @@ import java.time.LocalDateTime;
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final AccountServiceClient accountServiceClient;
 
     @Transactional
     public Payment create(
@@ -45,10 +51,20 @@ public class PaymentService {
         }
         payment.setState(toState);
         repository.update(payment);
+        if (payment.isCompleted()) {
+            accountServiceClient.updateBalance(payment.getUserId(), convertToBalanceEvent(payment));
+        }
         return payment;
     }
 
     public Payment getById(Long paymentId) {
         return repository.findById(paymentId).orElseThrow(() -> new PaymentNotFoundException(paymentId));
+    }
+
+    private BalanceChangedEvent convertToBalanceEvent(Payment payment) {
+        return BalanceChangedEvent.builder()
+                .amount(payment.getAmount())
+                .currency(payment.getCurrency())
+                .build();
     }
 }

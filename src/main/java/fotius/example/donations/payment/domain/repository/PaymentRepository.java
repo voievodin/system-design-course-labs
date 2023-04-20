@@ -1,4 +1,4 @@
-package fotius.example.donations.payment.domain;
+package fotius.example.donations.payment.domain.repository;
 
 import fotius.example.donations.payment.domain.model.Payment;
 
