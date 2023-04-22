@@ -1,4 +1,4 @@
-package fotius.example.donations.payment.domain;
+package fotius.example.donations.payment.domain.exception;
 
 public class PaymentSystemException extends RuntimeException {
     public PaymentSystemException(String message) {

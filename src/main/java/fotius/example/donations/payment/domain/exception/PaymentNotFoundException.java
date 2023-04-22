@@ -1,4 +1,4 @@
-package fotius.example.donations.payment.domain;
+package fotius.example.donations.payment.domain.exception;
 
 public class PaymentNotFoundException extends PaymentSystemException {
     public PaymentNotFoundException(Long paymentId) {
