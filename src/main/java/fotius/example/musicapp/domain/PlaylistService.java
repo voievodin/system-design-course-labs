@@ -9,10 +9,7 @@ import fotius.example.musicapp.domain.persistence.PlaylistRepository;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class PlaylistService {
 
     @Data
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class CreatePlaylistCommand {
 
@@ -89,6 +88,10 @@ public class PlaylistService {
         return repository.findById(id).orElseThrow(() -> new PlaylistNotFoundException(id));
     }
 
+    public List<Song> findAllSongsById(Long id) {
+        return getById(id).getSongs();
+    }
+
     public Slice<Playlist> findAllOrderedByCreatedAt(int page, int perPage, Sort.Direction order) {
         return repository.findAll(
             PageRequest.of(
@@ -116,7 +119,7 @@ public class PlaylistService {
     }
 
     @EventListener(BeforeSongIsDeleted.class)
-    void removeSongFromAllPlaylists(BeforeSongIsDeleted event) {
+    public void removeSongFromAllPlaylists(BeforeSongIsDeleted event) {
         for (Playlist playlist : repository.findBySongs(event.song())) {
             playlist.getSongs().removeIf(event.song()::equals);
             repository.save(playlist);
