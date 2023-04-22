@@ -3,8 +3,9 @@ package fotius.example.donations.account.domain;
 import fotius.example.donations.account.domain.exception.AccountNotFoundException;
 import fotius.example.donations.account.domain.model.Account;
 import fotius.example.donations.account.domain.model.Balance;
-import fotius.example.donations.account.domain.model.BalanceChangedEvent;
+import fotius.example.donations.account.domain.model.ChangeBalanceCommand;
 import fotius.example.donations.account.domain.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,7 +16,11 @@ import static fotius.example.donations.account.domain.model.Account.Status.CLOSE
 import static fotius.example.donations.account.domain.model.Account.Status.OPEN;
 
 @Service
-public record AccountService(AccountRepository accountRepository, ExchangeService exchangeService) {
+@RequiredArgsConstructor
+public final class AccountService {
+
+    private final AccountRepository accountRepository;
+    private final ExchangeService exchangeService;
 
     public long create(Account account) {
         account.setStatus(OPEN);
@@ -41,14 +46,14 @@ public record AccountService(AccountRepository accountRepository, ExchangeServic
         accountRepository.save(account);
     }
 
-    public void updateBalance(long accountId, BalanceChangedEvent balanceChangedEvent) {
-        Account account = getById(accountId);
+    public void updateBalance(ChangeBalanceCommand changeBalanceCommand) {
+        Account account = getById(changeBalanceCommand.getAccountId());
         if (account.isClosed()) {
             return;
         }
-        BigDecimal rate = exchangeService.getExchangeRate(balanceChangedEvent.getCurrency(), account.getCurrency()).getRate();
+        BigDecimal rate = exchangeService.getExchangeRate(changeBalanceCommand.getCurrency(), account.getCurrency()).getRate();
         BigDecimal newBalance = account.getBalance().value()
-                .add(balanceChangedEvent.getAmount().multiply(rate))
+                .add(changeBalanceCommand.getAmount().multiply(rate))
                 .setScale(2, RoundingMode.HALF_UP);
         account.setBalance(new Balance(newBalance));
         accountRepository.save(account);

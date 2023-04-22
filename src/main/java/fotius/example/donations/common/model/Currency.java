@@ -1,4 +1,4 @@
-package fotius.example.donations.account.domain.model;
+package fotius.example.donations.common.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

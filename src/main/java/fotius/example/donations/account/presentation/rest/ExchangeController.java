@@ -1,7 +1,7 @@
 package fotius.example.donations.account.presentation.rest;
 
 import fotius.example.donations.account.domain.ExchangeService;
-import fotius.example.donations.account.domain.model.Currency;
+import fotius.example.donations.common.model.Currency;
 import fotius.example.donations.account.domain.model.ExchangeRate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

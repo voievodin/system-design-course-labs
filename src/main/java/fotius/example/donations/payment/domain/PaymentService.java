@@ -1,16 +1,16 @@
 package fotius.example.donations.payment.domain;
 
-import fotius.example.donations.payment.domain.model.BalanceChangedEvent;
-import fotius.example.donations.payment.domain.client.AccountServiceClient;
+import fotius.example.donations.common.model.Currency;
+import fotius.example.donations.payment.domain.model.PaymentCompletedEvent;
 import fotius.example.donations.payment.domain.exception.PaymentNotFoundException;
 import fotius.example.donations.payment.domain.exception.PaymentSystemException;
-import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import fotius.example.donations.payment.domain.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +22,23 @@ import java.time.LocalDateTime;
 public class PaymentService {
 
     private final PaymentRepository repository;
-    private final AccountServiceClient accountServiceClient;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public Payment create(
-        BigDecimal amount,
-        Currency currency,
-        PaymentMethod method,
-        Long userId
+            BigDecimal amount,
+            Currency currency,
+            PaymentMethod method,
+            Long userId
     ) {
         final Payment payment = Payment.builder()
-            .amount(amount)
-            .currency(currency)
-            .method(method)
-            .userId(userId)
-            .state(PaymentState.NEW)
-            .createdAt(LocalDateTime.now())
-            .build();
+                .amount(amount)
+                .currency(currency)
+                .method(method)
+                .userId(userId)
+                .state(PaymentState.NEW)
+                .createdAt(LocalDateTime.now())
+                .build();
         repository.insert(payment);
         return payment;
     }
@@ -52,19 +52,14 @@ public class PaymentService {
         payment.setState(toState);
         repository.update(payment);
         if (payment.isCompleted()) {
-            accountServiceClient.updateBalance(payment.getUserId(), convertToBalanceEvent(payment));
+            publisher.publishEvent(PaymentCompletedEvent.builder()
+                    .payment(payment)
+                    .build());
         }
         return payment;
     }
 
     public Payment getById(Long paymentId) {
         return repository.findById(paymentId).orElseThrow(() -> new PaymentNotFoundException(paymentId));
-    }
-
-    private BalanceChangedEvent convertToBalanceEvent(Payment payment) {
-        return BalanceChangedEvent.builder()
-                .amount(payment.getAmount())
-                .currency(payment.getCurrency())
-                .build();
     }
 }

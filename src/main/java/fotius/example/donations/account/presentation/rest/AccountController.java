@@ -3,7 +3,6 @@ package fotius.example.donations.account.presentation.rest;
 import fotius.example.donations.account.domain.AccountService;
 import fotius.example.donations.account.domain.model.Account;
 import fotius.example.donations.account.domain.model.Balance;
-import fotius.example.donations.account.domain.model.BalanceChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,10 +43,5 @@ public class AccountController {
     @GetMapping("{id}/balance")
     public Balance getBalanceById(@PathVariable long id) {
         return accountService.getBalanceById(id);
-    }
-
-    @PutMapping("{id}/balance")
-    public void updateBalance(@PathVariable("id") long accountId, @RequestBody BalanceChangedEvent balanceChangedEvent) {
-        accountService.updateBalance(accountId, balanceChangedEvent);
     }
 }

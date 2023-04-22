@@ -1,6 +1,6 @@
 package fotius.example.donations.account.domain;
 
-import fotius.example.donations.account.domain.model.Currency;
+import fotius.example.donations.common.model.Currency;
 import fotius.example.donations.account.domain.model.ExchangeRate;
 import org.springframework.stereotype.Service;
 

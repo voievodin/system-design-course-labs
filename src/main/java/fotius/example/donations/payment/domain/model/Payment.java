@@ -1,6 +1,7 @@
 package fotius.example.donations.payment.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fotius.example.donations.common.model.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

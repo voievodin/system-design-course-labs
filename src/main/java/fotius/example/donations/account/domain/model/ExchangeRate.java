@@ -1,5 +1,6 @@
 package fotius.example.donations.account.domain.model;
 
+import fotius.example.donations.common.model.Currency;
 import lombok.Builder;
 import lombok.Value;
 

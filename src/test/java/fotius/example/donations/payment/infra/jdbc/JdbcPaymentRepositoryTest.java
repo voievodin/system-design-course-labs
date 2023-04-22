@@ -1,6 +1,6 @@
 package fotius.example.donations.payment.infra.jdbc;
 
-import fotius.example.donations.payment.domain.model.Currency;
+import fotius.example.donations.common.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;

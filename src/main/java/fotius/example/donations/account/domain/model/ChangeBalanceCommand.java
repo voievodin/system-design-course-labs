@@ -1,5 +1,6 @@
 package fotius.example.donations.account.domain.model;
 
+import fotius.example.donations.common.model.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,8 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BalanceChangedEvent {
+public class ChangeBalanceCommand {
+    private long accountId;
     private BigDecimal amount;
     private Currency currency;
 }
