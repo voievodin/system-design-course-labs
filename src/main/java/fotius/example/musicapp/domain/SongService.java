@@ -8,10 +8,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +25,7 @@ public class SongService {
 
     @Data
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateSongCommand {
 
@@ -50,6 +47,7 @@ public class SongService {
 
     @Data
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateSongCommand {
 
@@ -109,11 +107,9 @@ public class SongService {
 
     @Transactional
     public void delete(Long songId) {
-        final Optional<Song> song = repository.findById(songId);
-        if (song.isPresent()) {
-            eventPublisher.publishEvent(new BeforeSongIsDeleted(song.get()));
-            repository.delete(song.get());
-        }
+        final Song song = getById(songId);
+        eventPublisher.publishEvent(new BeforeSongIsDeleted(song));
+        repository.delete(song);
     }
 
     public Song getById(Long id) {
