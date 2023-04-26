@@ -1,6 +1,7 @@
-package fotius.example.auction.buyer.presentation.rest.dto;
+package fotius.example.auction.buyer.presentation.rest.dto.mapper;
 
 import fotius.example.auction.buyer.domain.BoughtItem;
+import fotius.example.auction.buyer.presentation.rest.dto.BoughtItemDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

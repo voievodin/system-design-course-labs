@@ -3,7 +3,7 @@ package fotius.example.auction.buyer.presentation.rest;
 import fotius.example.auction.buyer.domain.BoughtItem;
 import fotius.example.auction.buyer.domain.BoughtItemService;
 import fotius.example.auction.buyer.presentation.rest.dto.BoughtItemDto;
-import fotius.example.auction.buyer.presentation.rest.dto.BoughtItemDtoMapper;
+import fotius.example.auction.buyer.presentation.rest.dto.mapper.BoughtItemDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
