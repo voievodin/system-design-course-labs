@@ -13,7 +13,7 @@ public interface WebhookRepository {
 
     List<Webhook> getAll();
 
-    List<Webhook> getWithMethodAndState(PaymentMethod paymentMethod, PaymentState paymentState);
+    List<Webhook> getWithMethodAndState(Long userId,PaymentMethod paymentMethod, PaymentState paymentState);
 
     List<Webhook> getByUserId(Long userId);
 }

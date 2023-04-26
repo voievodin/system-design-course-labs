@@ -13,7 +13,7 @@ public class AccessWebhookOnPaymentStateChange implements PaymentChangeChecker {
     @Override
     public void onChange(Payment changed) {
         webhookService
-                .getWithMethodAndState(changed.getMethod(), changed.getState())
+                .getWithMethodAndState(changed.getUserId(), changed.getMethod(), changed.getState())
                 .forEach(x -> {
                     System.out.println("Payment " + changed.getId() + " changed. "
                             + "Payment method: " + changed.getMethod() + "; "
