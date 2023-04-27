@@ -4,6 +4,7 @@ import fotius.example.musicapp.domain.error.InvalidRequestException;
 import fotius.example.musicapp.domain.error.PlaylistNotFoundException;
 import fotius.example.musicapp.domain.error.SongIsAlreadyInPlaylistException;
 import fotius.example.musicapp.domain.model.Playlist;
+import fotius.example.musicapp.domain.model.PlaylistPage;
 import fotius.example.musicapp.domain.model.Song;
 import fotius.example.musicapp.domain.persistence.PlaylistRepository;
 import jakarta.validation.Validator;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 
@@ -51,10 +54,10 @@ public class PlaylistService {
             throw new InvalidRequestException("Failed to create playlist", violations);
         }
         final Playlist playlist = Playlist.builder()
-            .name(command.name)
-            .author(command.author)
-            .createdAt(LocalDateTime.now())
-            .build();
+                .name(command.name)
+                .author(command.author)
+                .createdAt(LocalDateTime.now())
+                .build();
         repository.save(playlist);
         return playlist;
     }
@@ -91,27 +94,27 @@ public class PlaylistService {
 
     public Slice<Playlist> findAllOrderedByCreatedAt(int page, int perPage, Sort.Direction order) {
         return repository.findAll(
-            PageRequest.of(
-                page,
-                perPage,
-                Sort.by(order, "createdAt")
-            )
+                PageRequest.of(
+                        page,
+                        perPage,
+                        Sort.by(order, "createdAt")
+                )
         );
     }
 
     public Slice<Playlist> findByAuthorOrderedByCreatedAt(
-        String author,
-        int page,
-        int perPage,
-        Sort.Direction order
+            String author,
+            int page,
+            int perPage,
+            Sort.Direction order
     ) {
         return repository.findByAuthor(
-            author,
-            PageRequest.of(
-                page,
-                perPage,
-                Sort.by(order, "createdAt")
-            )
+                author,
+                PageRequest.of(
+                        page,
+                        perPage,
+                        Sort.by(order, "createdAt")
+                )
         );
     }
 
@@ -121,5 +124,25 @@ public class PlaylistService {
             playlist.getSongs().removeIf(event.song()::equals);
             repository.save(playlist);
         }
+    }
+
+
+    @Transactional
+    public PlaylistPage getAllSorted(String author, Sort.Direction sort_direction, int page) {
+        int SIZE = 10;
+        Slice<Playlist> playlists = author == null ?
+                findAllOrderedByCreatedAt(page, SIZE, sort_direction) :
+                findByAuthorOrderedByCreatedAt(author, page, SIZE, sort_direction);
+        UriComponents url = UriComponentsBuilder.fromPath("/api/playlists/page")
+                .queryParam("author", author)
+                .queryParam("sort_type", sort_direction)
+                .queryParam("page", "{page}")
+                .build();
+        return PlaylistPage.builder()
+                .content(playlists.getContent())
+                .nextPageUrl(playlists.hasNext() ? url.expand(page + 1).toUriString() : null)
+                .previousPageUrl(playlists.hasPrevious() ? url.expand(page - 1).toUriString() : null)
+                .pageNumber(page)
+                .build();
     }
 }
