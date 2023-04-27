@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final List<PaymentChangeListener> listeners;
 
     @Transactional
     public Payment create(
@@ -34,6 +36,7 @@ public class PaymentService {
             .createdAt(LocalDateTime.now())
             .build();
         repository.insert(payment);
+        listeners.forEach(listener -> listener.onChange(payment));
         return payment;
     }
 
@@ -43,6 +46,7 @@ public class PaymentService {
         if (!payment.getState().canChangeTo(toState)) {
             throw new PaymentSystemException("State transition '%s' -> '%s' isn't supported".formatted(payment.getState(), toState));
         }
+        listeners.forEach(listener -> listener.onChange(payment));
         payment.setState(toState);
         repository.update(payment);
         return payment;
