@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class AccessWebhookOnPaymentStateChange implements PaymentChangeChecker {
+public class WebhookOnPaymentChangeNotifier implements PaymentChangeChecker {
 
     private final WebhookService webhookService;
     @Override
     public void onChange(Payment changed) {
         webhookService
-                .getWithMethodAndState(changed.getUserId(), changed.getMethod(), changed.getState())
+                .getWithMethodAndState(changed.getMethod(), changed.getState())
                 .forEach(x -> {
                     System.out.println("Payment " + changed.getId() + " changed. "
                             + "Payment method: " + changed.getMethod() + "; "

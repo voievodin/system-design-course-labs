@@ -86,17 +86,16 @@ public class JdbcWebhookRepository implements WebhookRepository {
     }
 
     @Override
-    public List<Webhook> getWithMethodAndState(Long userId,PaymentMethod paymentMethod, PaymentState paymentState) {
+    public List<Webhook> getWithMethodAndState(PaymentMethod paymentMethod, PaymentState paymentState) {
         return jdbcTemplate.query(
                 """
                     SELECT
                     	*
                     FROM
                     	webhook
-                    WHERE user_id=:user_id AND payment_method=:payment_method AND payment_state=:payment_state;
+                    WHERE payment_method=:payment_method AND payment_state=:payment_state;
                     """,
                 new MapSqlParameterSource()
-                        .addValue("user_id",userId)
                         .addValue("payment_method", paymentMethod.name())
                         .addValue("payment_state", paymentState.name()),
                 (rs, rowNum) ->

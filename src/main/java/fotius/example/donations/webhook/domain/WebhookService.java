@@ -32,8 +32,8 @@ public class WebhookService {
 
     public List<Webhook> getAll(){ return repository.getAll();}
 
-    public List<Webhook> getWithMethodAndState(Long userId,PaymentMethod paymentMethod, PaymentState paymentState){
-        return repository.getWithMethodAndState(userId,paymentMethod,paymentState);
+    public List<Webhook> getWithMethodAndState(PaymentMethod paymentMethod, PaymentState paymentState){
+        return repository.getWithMethodAndState(paymentMethod,paymentState);
     }
 
     public List<Webhook> getByUserId(Long userId){return repository.getByUserId(userId);}

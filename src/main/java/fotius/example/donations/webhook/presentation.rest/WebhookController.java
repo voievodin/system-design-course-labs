@@ -20,9 +20,9 @@ public class WebhookController {
 
     private final WebhookService webhookService;
 
-    @PostMapping(path = "/{user_id}/add",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Webhook create(@PathVariable("user_id") Long userId,
+    public Webhook create(@RequestParam("user_id") Long userId,
                           @RequestParam("url") URL url,
                           @RequestParam("payment_method") PaymentMethod paymentMethod,
                           @RequestParam("payment_state")PaymentState paymentState){
