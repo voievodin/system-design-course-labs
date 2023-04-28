@@ -5,7 +5,6 @@ import fotius.example.donations.payment.domain.model.PaymentState;
 import fotius.example.donations.webhook.domain.model.Webhook;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ public class WebhookService {
 
     private final WebhookRepository repository;
 
-    @Transactional
     public Webhook create(
             Long userId,
             URL targetUrl,
@@ -35,20 +33,15 @@ public class WebhookService {
         return webhook;
     }
 
-    @Transactional
     public void delete(Long id) {
         repository.delete(id);
     }
 
-    public List<Webhook> getAll() {
-        return repository.getAll();
+    public List<Webhook> getAllByUserId(Long userId) {
+        return repository.getAllByUserId(userId);
     }
 
     public List<Webhook> getWithMethodAndState(PaymentMethod method, PaymentState state) {
         return repository.getWithMethodAndState(method, state);
-    }
-
-    public List<Webhook> getAllByUserId(Long userId) {
-        return repository.getAllByUserId(userId);
     }
 }

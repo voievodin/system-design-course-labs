@@ -22,13 +22,13 @@ public class AccessWebhooksOnPaymentStateChange implements PaymentChangeListener
     public void onChanged(Payment changed) {
         webhookService
                 .getWithMethodAndState(changed.getMethod(), changed.getState())
-                .forEach(x -> {
+                .forEach(webhook -> {
                     System.out.println("Payment " + changed.getId() + " changed. "
                             + "Payment method: " + changed.getMethod() + "; "
                             + "Payment state: " + changed.getState() + ";");
 ////                    Or:
 //                    try {
-//                        sendPOST(x, "Payment " + changed.getId() + " changed. " +
+//                        sendPOST(webhook, "Payment " + changed.getId() + " changed. " +
 //                                "Payment method: " + changed.getMethod() + "; " +
 //                                "Payment state: " + changed.getState() + ";");
 //                    } catch (IOException e) {

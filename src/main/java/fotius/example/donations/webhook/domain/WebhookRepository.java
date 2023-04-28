@@ -11,9 +11,7 @@ public interface WebhookRepository {
 
     void delete(Long id);
 
-    List<Webhook> getAll();
+    List<Webhook> getAllByUserId(Long userId);
 
     List<Webhook> getWithMethodAndState(PaymentMethod method, PaymentState state);
-
-    List<Webhook> getAllByUserId(Long userId);
 }

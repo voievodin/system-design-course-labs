@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
@@ -55,100 +57,54 @@ public class JdbcWebhookRepository implements WebhookRepository {
     @Override
     public void delete(Long id) {
         jdbcTemplate.update(
-            """
-                DELETE FROM webhook
+        """
+            DELETE FROM webhook
                 WHERE id = :id;
-                """,
-                new MapSqlParameterSource()
-                        .addValue("id", id)
-        );
-    }
-
-    @Override
-    public List<Webhook> getAll() {
-        return jdbcTemplate.query(
-                """
-                    SELECT
-                    	*
-                    FROM
-                    	webhook;
-                    """,
-                (rs, rowNum) ->
-                {
-                    try {
-                        return Webhook.builder()
-                            .id(rs.getLong("id"))
-                            .userId(rs.getLong("user_id"))
-                            .targetUrl(Objects.isNull(rs.getString("target_url")) ? null : new URL(rs.getString("target_url")))
-                            .paymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")))
-                            .paymentState(PaymentState.valueOf(rs.getString("payment_state")))
-                            .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-                            .build();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            """,
+            new MapSqlParameterSource()
+                    .addValue("id", id)
         );
     }
 
     @Override
     public List<Webhook> getWithMethodAndState(PaymentMethod method, PaymentState state) {
         return jdbcTemplate.query(
-                """
-                    SELECT
-                    	*
-                    FROM
-                    	webhook
+            """
+                SELECT * FROM webhook
                     WHERE payment_method=:payment_method AND payment_state=:payment_state;
-                    """,
-                new MapSqlParameterSource()
-                        .addValue("payment_method", method.name())
-                        .addValue("payment_state", state.name()),
-                (rs, rowNum) ->
-                {
-                    try {
-                        return Webhook.builder()
-                                .id(rs.getLong("id"))
-                                .userId(rs.getLong("user_id"))
-                                .targetUrl(Objects.isNull(rs.getString("target_url")) ? null : new URL(rs.getString("target_url")))
-                                .paymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")))
-                                .paymentState(PaymentState.valueOf(rs.getString("payment_state")))
-                                .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-                                .build();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                """,
+            new MapSqlParameterSource()
+                    .addValue("payment_method", method.name())
+                    .addValue("payment_state", state.name()),
+                JdbcWebhookRepository::mapRow
         );
     }
 
     @Override
     public List<Webhook> getAllByUserId(Long userId) {
         return jdbcTemplate.query(
-                """
-                    SELECT
-                    	*
-                    FROM
-                    	webhook
-                    WHERE user_id=:user_id;
-                    """,
-                new MapSqlParameterSource()
-                        .addValue("user_id", userId),
-                (rs, rowNum) ->
-                {
-                    try {
-                        return Webhook.builder()
-                                .id(rs.getLong("id"))
-                                .userId(rs.getLong("user_id"))
-                                .targetUrl(Objects.isNull(rs.getString("target_url")) ? null : new URL(rs.getString("target_url")))
-                                .paymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")))
-                                .paymentState(PaymentState.valueOf(rs.getString("payment_state")))
-                                .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-                                .build();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            """
+                SELECT * FROM webhook
+                WHERE user_id=:user_id;
+                """,
+            new MapSqlParameterSource()
+                    .addValue("user_id", userId),
+                JdbcWebhookRepository::mapRow
         );
+    }
+
+    private static Webhook mapRow(ResultSet rs, int rowNum) {
+        try {
+            return Webhook.builder()
+                    .id(rs.getLong("id"))
+                    .userId(rs.getLong("user_id"))
+                    .targetUrl(Objects.isNull(rs.getString("target_url")) ? null : new URL(rs.getString("target_url")))
+                    .paymentMethod(PaymentMethod.valueOf(rs.getString("payment_method")))
+                    .paymentState(PaymentState.valueOf(rs.getString("payment_state")))
+                    .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                    .build();
+        } catch (MalformedURLException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
