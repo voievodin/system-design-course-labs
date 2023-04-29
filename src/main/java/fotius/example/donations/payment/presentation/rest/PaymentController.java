@@ -6,15 +6,8 @@ import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 

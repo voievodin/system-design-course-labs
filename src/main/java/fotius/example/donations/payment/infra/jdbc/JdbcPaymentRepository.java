@@ -6,7 +6,6 @@ import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
