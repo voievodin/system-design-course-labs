@@ -1,7 +1,6 @@
 package fotius.example.donations.payment.domain;
 
 import fotius.example.donations.payment.domain.model.PaymentMethod;
-
 import org.springframework.stereotype.Component;
 
 import java.util.List;
