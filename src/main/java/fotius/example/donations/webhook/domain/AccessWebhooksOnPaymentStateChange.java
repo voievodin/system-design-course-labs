@@ -20,24 +20,20 @@ public class AccessWebhooksOnPaymentStateChange implements PaymentChangeListener
 
     @Override
     public void onChanged(Payment changed) {
-        webhookService
-                .getWithMethodAndState(changed.getMethod(), changed.getState())
-                .forEach(webhook -> {
-                    System.out.println("Payment " + changed.getId() + " changed. "
-                            + "Payment method: " + changed.getMethod() + "; "
-                            + "Payment state: " + changed.getState() + ";");
-////                    Or:
-//                    try {
-//                        sendPOST(webhook, "Payment " + changed.getId() + " changed. " +
-//                                "Payment method: " + changed.getMethod() + "; " +
-//                                "Payment state: " + changed.getState() + ";");
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-                });
+        webhookService.getAllByMethodAndState(changed.getMethod(), changed.getState())
+                .forEach(webhook -> System.out.println("Send message on " + webhook.getTargetUrl()));
     }
 
     private static void sendPOST(Webhook webhook, String message) throws IOException {
+        ////Or:
+        //try {
+        //    sendPOST(webhook, "Payment " + changed.getId() + " changed. " +
+        //            "Payment method: " + changed.getMethod() + "; " +
+        //            "Payment state: " + changed.getState() + ";");
+        //} catch (IOException e) {
+        //    throw new RuntimeException(e);
+        //}
+
         HttpURLConnection con = (HttpURLConnection) webhook.getTargetUrl().openConnection();
         con.setRequestMethod("POST");
 
