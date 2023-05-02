@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final List<PaymentChangeListener> listeners;
 
     @Transactional
     public Payment create(
@@ -34,21 +36,31 @@ public class PaymentService {
             .createdAt(LocalDateTime.now())
             .build();
         repository.insert(payment);
+
+        listeners.forEach(x -> x.onChanged(payment));
+
         return payment;
     }
 
     @Transactional
     public Payment changeState(Long paymentId, PaymentState toState) {
-        final Payment payment = repository.findById(paymentId).orElseThrow(() -> new PaymentNotFoundException(paymentId));
+        final Payment payment = repository.findById(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException(paymentId));
         if (!payment.getState().canChangeTo(toState)) {
-            throw new PaymentSystemException("State transition '%s' -> '%s' isn't supported".formatted(payment.getState(), toState));
+            throw new PaymentSystemException(
+                    "State transition '%s' -> '%s' isn't supported".formatted(payment.getState(), toState)
+            );
         }
         payment.setState(toState);
         repository.update(payment);
+
+        listeners.forEach(x -> x.onChanged(payment));
+
         return payment;
     }
 
     public Payment getById(Long paymentId) {
-        return repository.findById(paymentId).orElseThrow(() -> new PaymentNotFoundException(paymentId));
+        return repository.findById(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException(paymentId));
     }
 }
