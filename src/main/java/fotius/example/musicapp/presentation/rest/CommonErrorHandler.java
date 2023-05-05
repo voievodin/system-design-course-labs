@@ -1,6 +1,7 @@
 package fotius.example.musicapp.presentation.rest;
 
 import fotius.example.musicapp.domain.error.InvalidRequestException;
+import fotius.example.musicapp.domain.error.SongIsAlreadyInPlaylistException;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -48,6 +49,18 @@ public class CommonErrorHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleException(Exception ex) {
         log.error("Failed to process request due to exception", ex);
+        return ResponseEntity.internalServerError()
+            .body(
+                new ApiError(
+                    ex.getMessage(),
+                    LocalDateTime.now(),
+                    List.of()
+                )
+            );
+    }
+
+    @ExceptionHandler(SongIsAlreadyInPlaylistException.class)
+    public ResponseEntity<ApiError> handleSongIsAlreadyInPlaylistException(SongIsAlreadyInPlaylistException ex) {
         return ResponseEntity.internalServerError()
             .body(
                 new ApiError(
