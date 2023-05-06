@@ -21,40 +21,40 @@ public class CommonErrorHandler {
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ApiError> handleInvalidRequestException(InvalidRequestException ex) {
         return ResponseEntity.badRequest()
-            .body(
-                new ApiError(
-                    ex.getMessage(),
-                    LocalDateTime.now(),
-                    ex.getViolations()
-                        .stream()
-                        .map(ConstraintViolation::getMessage)
-                        .toList()
-                )
-            );
+                .body(
+                        new ApiError(
+                                ex.getMessage(),
+                                LocalDateTime.now(),
+                                ex.getViolations()
+                                        .stream()
+                                        .map(ConstraintViolation::getMessage)
+                                        .toList()
+                        )
+                );
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return ResponseEntity.badRequest()
-            .body(
-                new ApiError(
-                    ex.getMessage(),
-                    LocalDateTime.now(),
-                    List.of()
-                )
-            );
+                .body(
+                        new ApiError(
+                                ex.getMessage(),
+                                LocalDateTime.now(),
+                                List.of()
+                        )
+                );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleException(Exception ex) {
         log.error("Failed to process request due to exception", ex);
         return ResponseEntity.internalServerError()
-            .body(
-                new ApiError(
-                    ex.getMessage(),
-                    LocalDateTime.now(),
-                    List.of()
-                )
-            );
+                .body(
+                        new ApiError(
+                                ex.getMessage(),
+                                LocalDateTime.now(),
+                                List.of()
+                        )
+                );
     }
 }
