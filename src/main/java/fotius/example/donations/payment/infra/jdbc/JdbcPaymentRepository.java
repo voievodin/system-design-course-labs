@@ -1,5 +1,6 @@
 package fotius.example.donations.payment.infra.jdbc;
 
+import fotius.example.donations.monitoring.domain.model.AmountLimitType;
 import fotius.example.donations.payment.domain.PaymentRepository;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -110,5 +112,77 @@ public class JdbcPaymentRepository implements PaymentRepository {
                 .addValue("user_id", payment.getUserId())
                 .addValue("state", payment.getState().name())
         );
+    }
+
+    @Override
+    public Optional<Payment[]> findByMethodByCurrencyWithHigherAmount(PaymentMethod method,
+                                                                     Currency currency,
+                                                                     BigDecimal amount) {
+        List<Payment> payments = jdbcTemplate.query(
+                "SELECT " +
+                        "id, amount, method, currency, user_id, state, created_at " +
+                        "FROM payment " +
+                        "WHERE " +
+                        "method = :method AND " +
+                        "currency = :currency AND " +
+                        "amount > :amount ",
+                new MapSqlParameterSource()
+                        .addValue("method", method)
+                        .addValue("currency", currency)
+                        .addValue("amount", amount),
+                (rs, rowNum) ->
+                        Payment.builder()
+                                .id(rs.getLong("id"))
+                                .amount(rs.getBigDecimal("amount"))
+                                .method(PaymentMethod.valueOf(rs.getString("method")))
+                                .currency(Currency.valueOf(rs.getString("currency")))
+                                .userId(rs.getLong("user_id"))
+                                .state(PaymentState.valueOf(rs.getString("state")))
+                                .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                                .build()
+        );
+        if (payments.isEmpty()) {
+            return Optional.empty();
+        } else {
+            Payment[] result = new Payment[payments.size()];
+            payments.toArray(result);
+            return Optional.of(result);
+        }
+    }
+
+    @Override
+    public Optional<Payment[]> findByMethodByCurrencyWithLowerAmount(PaymentMethod method,
+                                                                    Currency currency,
+                                                                    BigDecimal amount) {
+        List<Payment> payments = jdbcTemplate.query(
+                "SELECT " +
+                        "id, amount, method, currency, user_id, state, created_at " +
+                        "FROM payment " +
+                        "WHERE " +
+                        "method = :method AND " +
+                        "currency = :currency AND " +
+                        "amount < :amount ",
+                new MapSqlParameterSource()
+                        .addValue("method", method)
+                        .addValue("currency", currency)
+                        .addValue("amount", amount),
+                (rs, rowNum) ->
+                        Payment.builder()
+                                .id(rs.getLong("id"))
+                                .amount(rs.getBigDecimal("amount"))
+                                .method(PaymentMethod.valueOf(rs.getString("method")))
+                                .currency(Currency.valueOf(rs.getString("currency")))
+                                .userId(rs.getLong("user_id"))
+                                .state(PaymentState.valueOf(rs.getString("state")))
+                                .createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+                                .build()
+        );
+        if (payments.isEmpty()) {
+            return Optional.empty();
+        } else {
+            Payment[] result = new Payment[payments.size()];
+            payments.toArray(result);
+            return Optional.of(result);
+        }
     }
 }

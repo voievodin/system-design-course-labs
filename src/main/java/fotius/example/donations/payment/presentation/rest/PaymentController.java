@@ -61,4 +61,6 @@ public class PaymentController {
     public Payment getById(@PathVariable("id") Long id) {
         return paymentService.getById(id);
     }
+
+
 }
