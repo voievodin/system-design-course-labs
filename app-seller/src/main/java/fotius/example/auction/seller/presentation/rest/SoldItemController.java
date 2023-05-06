@@ -46,6 +46,7 @@ public class SoldItemController {
                     .collect(Collectors.toList());
         }
 
+
         public SoldItemDto map(SoldItem soldItem) {
             return SoldItemDto.builder()
                     .description(soldItem.getDescription())
