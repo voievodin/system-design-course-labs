@@ -1,1 +1,6 @@
 rootProject.name = 'system-design-course-labs'
+include 'app-auction'
+include 'app-buyer'
+include 'app-seller'
+include 'app-auction-api'
+
