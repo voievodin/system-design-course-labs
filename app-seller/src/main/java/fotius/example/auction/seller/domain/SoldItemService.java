@@ -24,11 +24,11 @@ public class SoldItemService {
     }
 
     public List<SoldItem> findAll(String username) {
-        return soldItemRepository.findAllSoldForUser(username);
+        return soldItemRepository.findAllSoldBySoldBy(username);
     }
 
     public BigDecimal getAllIncome(String username) {
-        List<SoldItem> soldItems = soldItemRepository.findAllSoldForUser(username);
+        List<SoldItem> soldItems = soldItemRepository.findAllSoldBySoldBy(username);
         return soldItems.stream().map(SoldItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
