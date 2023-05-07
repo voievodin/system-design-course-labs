@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "90868a3e-af45-454a-8e4a-9674d6192374",
+		"name": "Donation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26591302",
+		"_collection_link": "https://winter-moon-574029.postman.co/workspace/todolist~cf33552c-4a8f-47f9-aa86-2cef83de09da/collection/26591302-90868a3e-af45-454a-8e4a-9674d6192374?action=share&creator=26591302&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Set payment state",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/payments/1/state/COMPLETED",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"payments",
+						"1",
+						"state",
+						"COMPLETED"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account open",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "USD",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/account/open",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"account",
+						"open"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account close",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"Currency\": \"USD\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/account/open",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"account",
+						"open"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View All Accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/account/find/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"account",
+						"find",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View By Currency",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Add new payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/payments?method=CARD&currency=EUR&amount=100&user_id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"payments"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "CARD"
+						},
+						{
+							"key": "currency",
+							"value": "EUR"
+						},
+						{
+							"key": "amount",
+							"value": "100"
+						},
+						{
+							"key": "user_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
