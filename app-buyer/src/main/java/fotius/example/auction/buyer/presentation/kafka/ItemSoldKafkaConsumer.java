@@ -1,6 +1,7 @@
 package fotius.example.auction.buyer.presentation.kafka;
 
 import fotius.example.auction.api.ItemSold;
+import fotius.example.auction.buyer.domain.BoughtItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,11 +17,12 @@ import org.springframework.stereotype.Component;
 public class ItemSoldKafkaConsumer {
     
     private final ObjectMapper objectMapper;
+    private final BoughtItemService boughtItemService;
     
     @KafkaListener(topics = ItemSold.TOPIC)
     public void onItemSold(String payload) throws JsonProcessingException {
         final ItemSold itemSold = objectMapper.readValue(payload, ItemSold.class);
         log.info("Item sold: {}", itemSold);
-        // TODO: add code to actually process event
+        boughtItemService.save(itemSold);
     }
 }
