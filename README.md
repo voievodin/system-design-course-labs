@@ -1,4 +1,4 @@
-Lab1 (donations system)
+Lab3 (auction system)
 ---
 
 ### Software
@@ -9,51 +9,46 @@ Required:
 Useful resources:
 - Jdk17 installation [guide](docs/install-jdk17.md).
 - Intellij IDEA project setup [guide](docs/setup-intellij-project.md).
+- Docker (or alternatively follow this [guide](https://kafka.apache.org/quickstart) to start kafka broker + zookeeper)
 - [sqlite client](https://sqlite.org/download.html).
 - `curl` must be available in your _Git Bash_ terminal.
 - [Postman](https://www.postman.com/downloads/) as `curl` alternative.
 
-In order to add a new database migration create a new file with a version increased by 1. 
+In order to add a new database migration create a new file with a version increased by 1.
 Flyway will be able to detect new migration during application startup and will automatically apply it.
 For example:
 ```
-└───src/main/resources/db/migration
-    └───V1__create_payment_table.sql
+└───app-buyer/src/main/resources/db/migration
+    └───V1__demo_migration.sql
     └───V2__your_database_change.sql <-- here you go (notice the prefix pattern 'V2__')
 ```
-
 ### Application
 
-Start:
-
-```sh
-./gradlew bootRun
+Start kafka:
+```
+docker-compose up
 ```
 
-or run _Application.main_ from IDE.
+Start app-auction:
+
+```sh
+./gradlew app-auction:bootRun
+```
+
+or run _fotius.example.auction.Application.main_ from IDE.
+
+Web interface - `http://localhost:8080/login.html`.
 
 Stop:
 
-Press <kbd>ctrl+c</kbd> or stop _Application.main_ from IDE.
+Press <kbd>ctrl+c</kbd> or stop _fotius.example.auction.Application.main_ from IDE.
 
-### Existing API
+You can start app-buyer and app-seller the same way as app-auction. Web interface - `http://localhost:8000/login.html`.
 
-Create payment:
+---
+In case you want to play around with kafka utilities, bash into the container:
 ```sh
-curl -X POST "localhost:8080/api/payments?method=CARD&currency=EUR&amount=100&user_id=1"
+docker exec -ti broker bash
 ```
 
-Get payment with id 3:
-```sh
-curl localhost:8080/api/payments/3
-```
-
-Change state of payment with id 3 to INITIATED:
-```sh
-curl -X POST localhost:8080/api/payments/3/state/INITIATED
-```
-
-List all payment methods that user with id 17 can use:
-```sh
-curl localhost:8080/api/methods/17
-```
+You can use most of the commands available in the doc [here](https://kafka.apache.org/quickstart).
