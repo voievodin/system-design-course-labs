@@ -1,11 +1,11 @@
 package fotius.example.donations.payment.domain;
 
+import fotius.example.donations.account.domain.AccountService;
 import fotius.example.donations.payment.domain.model.Currency;
 import fotius.example.donations.payment.domain.model.Payment;
 import fotius.example.donations.payment.domain.model.PaymentMethod;
 import fotius.example.donations.payment.domain.model.PaymentState;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final AccountService accountService;
 
     @Transactional
     public Payment create(
@@ -45,6 +46,11 @@ public class PaymentService {
         }
         payment.setState(toState);
         repository.update(payment);
+
+        /* Визов підсистеми підрахунку прибутку*/
+        if (toState == PaymentState.COMPLETED)
+            accountService.savePaymentToAccount(payment);
+
         return payment;
     }
 
