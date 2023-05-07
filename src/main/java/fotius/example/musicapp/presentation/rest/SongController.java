@@ -37,8 +37,6 @@ public class SongController {
                         .build());
     }
 
-    // Can be used as:
-    // GET localhost:8080/api/songs/123
     @RequestMapping(
             method = RequestMethod.GET,
             path = "{id}",
