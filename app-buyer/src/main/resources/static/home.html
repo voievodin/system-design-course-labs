@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Колекція</title>
+    <!-- Bootstrap 5 css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">📝Колекція</a>
+    </div>
+</nav>
+
+<div id="app" class="container-fluid" style="padding: 20px 40px">
+    <div class="row">
+        <h3>Вартість колекції - {{value}}</h3>
+        <ul class="list-group">
+            <li v-for="(item) in items" class="list-group-item">{{item.description}} - {{item.price}}</li>
+        </ul>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Bootstrap 5 js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous">
+</script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<!-- Emoji as favicon -->
+<script>
+    document.head.appendChild(
+        Object.assign(
+            document.createElement("link"),
+            {
+                rel: "icon",
+                href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>"
+            }
+        )
+    )
+</script>
+<script>
+  const { createApp } = Vue
+
+  createApp({
+    data() {
+      return {
+        username: new URLSearchParams(window.location.search).get("username"),
+        items: [],
+        value: 0
+      }
+    },
+    methods: {
+      apiFetchBoughtItems() {
+        return fetch("/api/" + this.username + "/bought-items")
+            .then(response => response.json())
+            .then(items => {
+                this.items = items;
+                this.value = items.map(i => i.price).reduce((a, b) => a + b, 0);            
+            });
+      }
+    },
+    
+    mounted: function() {
+       this.apiFetchBoughtItems();
+    }
+  }).mount('#app')
+</script>
+</body>
+</html>
