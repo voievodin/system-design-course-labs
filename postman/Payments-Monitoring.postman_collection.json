@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "6affdf27-1688-416b-b0dc-7246ce2916de",
+		"name": "Payments/Monitoring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21990187"
+	},
+	"item": [
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Create Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/payments?method=APPLE_PAY&currency=USD&amount=10000&user_id=3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							],
+							"query": [
+								{
+									"key": "method",
+									"value": "APPLE_PAY"
+								},
+								{
+									"key": "currency",
+									"value": "USD"
+								},
+								{
+									"key": "amount",
+									"value": "10000"
+								},
+								{
+									"key": "user_id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/payments/{{payment-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{payment-id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Payment State INITIATED",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/payments/{{payment-id}}/state/INITIATED",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{payment-id}}",
+								"state",
+								"INITIATED"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Payment State COMPLETED",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/payments/{{payment-id}}/state/COMPLETED",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{payment-id}}",
+								"state",
+								"COMPLETED"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Payment State UNCOMPLETED",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/payments/{{payment-id}}/state/CANCELED",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"{{payment-id}}",
+								"state",
+								"CANCELED"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Monitoring",
+			"item": [
+				{
+					"name": "Get Tracker",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/trackers/rate/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"trackers",
+								"rate",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Tracker",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/trackers?method=APPLE_PAY&currency=USD&amount_limit=1000&amount_limit_type=HIGHER&tracker_id=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"trackers"
+							],
+							"query": [
+								{
+									"key": "method",
+									"value": "APPLE_PAY"
+								},
+								{
+									"key": "currency",
+									"value": "USD"
+								},
+								{
+									"key": "amount_limit",
+									"value": "1000"
+								},
+								{
+									"key": "amount_limit_type",
+									"value": "HIGHER"
+								},
+								{
+									"key": "tracker_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Trackers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/trackers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"trackers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "payment-id",
+			"value": "4",
+			"type": "string"
+		}
+	]
+}
